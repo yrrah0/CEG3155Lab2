@@ -1,0 +1,197 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_misc.all;
+
+entity bit4multi is
+    port (
+        i_X, i_Y: in std_logic_vector(3 downto 0);
+        i_clk, i_reset: in std_logic;
+        o_P: out std_logic_vector(7 downto 0);
+        o_V, o_Z: out std_logic
+    );
+end;
+
+architecture rtl of bit4multi is
+    component bit4controlmulti is
+        port (
+            i_clk: in std_logic;
+            i_reset: in std_logic;
+            PRD_0_Z: in std_logic;
+            CNT_EQU_4: in std_logic;
+            PRD_RESETN: out std_logic;
+            PRD_SHIFT_RIGHT: out std_logic;
+            PRD_LEFT_LOAD: out std_logic;
+            PRD_RIGHT_LOAD: out std_logic;
+            CNT_CLK: out std_logic;
+            CNT_RESETN: out std_logic;
+            OUT_LOAD: out std_logic;
+            M_AND_RESETN: out std_logic;
+            M_AND_LOAD: out std_logic;
+            M_ER_RESETN: out std_logic;
+            M_ER_LOAD: out std_logic
+        );
+    end component;
+
+    component bit8shiftregister is
+        port (
+            i_clk, i_reset: in std_logic;
+            MODE: in std_logic_vector(1 downto 0);
+            SERIAL_IN_LEFT, SERIAL_IN_RIGHT: in std_logic;
+            PARALLEL_IN: in std_logic_vector(7 downto 0);
+            PARALLEL_OUT: out std_logic_vector(7 downto 0)
+        );
+        -- MODE: 00 for latching, 01 for parallel loading, 10 for shifting left, 11 for shifting right
+    end component;
+
+    component bit4shiftregister is
+        port (
+            i_clk, i_reset: in std_logic;
+            MODE: in std_logic_vector(1 downto 0);
+            SERIAL_IN_LEFT, SERIAL_IN_RIGHT: in std_logic;
+            PARALLEL_IN: in std_logic_vector(3 downto 0);
+            PARALLEL_OUT: out std_logic_vector(3 downto 0)
+        );
+        -- MODE: 00 for latching, 01 for parallel loading, 10 for shifting left, 11 for shifting right
+    end component;
+    
+    component bit4addersubtractor is
+        port (
+            i_X, i_Y: in std_logic_vector(3 downto 0);
+            SUB: in std_logic;
+            S: out std_logic_vector(3 downto 0);
+            Cout: out std_logic;
+            o_V, o_Z: out std_logic
+        );
+    end component;
+    
+    component bit4counter16 is
+        port (
+            i_clk, i_reset, EN: in std_logic;
+            VALUE: out std_logic_vector(3 downto 0)
+        );
+    end component;
+    
+    signal signalCounterClock: std_logic;
+    signal signalCounterResetN: std_logic;
+    signal signalCounterValue: std_logic_vector(3 downto 0);
+    
+    signal signalOutputLoad: std_logic;
+    signal signalOutput: std_logic_vector(7 downto 0);
+    
+    signal signalSRMultiplicandResetN: std_logic;
+    signal signalSRMultiplicandLoad: std_logic;
+    signal signalSRMultiplicandOut: std_logic_vector(3 downto 0);
+    
+    signal signalSRMultiplierResetN: std_logic;
+    signal signalSRMultiplierLoad: std_logic;
+    signal signalSRMultiplierOut: std_logic_vector(3 downto 0);
+    
+    signal signalSRProductResetN: std_logic;
+    signal signalSRProductLeftLoad: std_logic;
+    signal signalSRProductRightLoad: std_logic;
+    signal signalSRProductShiftRight: std_logic;
+    
+    signal signalSRProductLeftInput: std_logic_vector(3 downto 0);
+    signal signalSRProductLeftOutput: std_logic_vector(3 downto 0);
+    signal signalSRProductRightOutput: std_logic_vector(3 downto 0);
+begin
+    counter: bit4counter16
+        port map (
+            i_clk => signalCounterClock,
+            i_reset => i_reset and signalCounterResetN,
+            EN => '1',
+            VALUE => signalCounterValue
+        );
+
+    control: bit4controlmulti
+        port map (
+            i_clk => i_clk,
+            i_reset => i_reset,
+            PRD_0_Z => not signalSRProductRightOutput(0),
+            CNT_EQU_4 => signalCounterValue(2) and (not signalCounterValue(1)) and signalCounterValue(0),
+            PRD_RESETN => signalSRProductResetN,
+            PRD_SHIFT_RIGHT => signalSRProductShiftRight,
+            PRD_LEFT_LOAD => signalSRProductLeftLoad,
+            PRD_RIGHT_LOAD => signalSRProductRightLoad,
+            CNT_CLK => signalCounterClock,
+            CNT_RESETN => signalCounterResetN,
+            OUT_LOAD => signalOutputLoad,
+            M_AND_RESETN => signalSRMultiplicandResetN,
+            M_AND_LOAD => signalSRMultiplicandLoad,
+            M_ER_RESETN => signalSRMultiplierResetN,
+            M_ER_LOAD => signalSRMultiplierLoad
+        );
+
+    adderSubtractor4Inst: bit4addersubtractor
+        port map (
+            i_X => signalSRProductLeftOutput,
+            i_Y => i_X,
+            SUB => '0',
+            S => signalSRProductLeftInput
+        );
+    
+    SRMultiplicand: bit4shiftregister
+        port map (
+            i_clk => i_clk,
+            i_reset => i_reset and signalSRMultiplicandResetN,
+            MODE(1) => '0',
+            MODE(0) => signalSRMultiplicandLoad,
+            SERIAL_IN_LEFT => '0',
+            SERIAL_IN_RIGHT => '0',
+            PARALLEL_IN => i_X,
+            PARALLEL_OUT => signalSRMultiplicandOut
+        );
+    
+    SRMultiplier: bit4shiftregister
+        port map (
+            i_clk => i_clk,
+            i_reset => i_reset and signalSRMultiplierResetN,
+            MODE(1) => '0',
+            MODE(0) => signalSRMultiplierLoad,
+            SERIAL_IN_LEFT => '0',
+            SERIAL_IN_RIGHT => '0',
+            PARALLEL_IN => i_Y,
+            PARALLEL_OUT => signalSRMultiplierOut
+        );
+    
+    SRProductLeft: bit4shiftregister
+        port map (
+            i_clk => i_clk,
+            i_reset => i_reset and signalSRProductResetN,
+            MODE(1) => signalSRProductShiftRight,
+            MODE(0) => signalSRProductShiftRight or signalSRProductLeftLoad,
+            SERIAL_IN_LEFT => '0',
+            SERIAL_IN_RIGHT => '0',
+            PARALLEL_IN => signalSRProductLeftInput,
+            PARALLEL_OUT => signalSRProductLeftOutput
+        );
+        
+    SRProductRight: bit4shiftregister
+        port map (
+            i_clk => i_clk,
+            i_reset => i_reset and signalSRProductResetN,
+            MODE(1) => signalSRProductShiftRight,
+            MODE(0) => signalSRProductShiftRight or signalSRProductRightLoad,
+            SERIAL_IN_LEFT => signalSRProductLeftOutput(0),
+            SERIAL_IN_RIGHT => '0',
+            PARALLEL_IN => i_Y,
+            PARALLEL_OUT => signalSRProductRightOutput
+        );
+        
+    SROutput: bit8shiftregister
+        port map (
+            i_clk => i_clk,
+            i_reset => i_reset,
+            MODE(1) => '0',
+            MODE(0) => signalOutputLoad,
+            SERIAL_IN_LEFT => '0',
+            SERIAL_IN_RIGHT => '0',
+            PARALLEL_IN(7 downto 4) => signalSRProductLeftOutput,
+            PARALLEL_IN(3 downto 0) => signalSRProductRightOutput,
+            PARALLEL_OUT => signalOutput
+        );
+    
+    o_P <= signalOutput;
+    o_V <= '0';
+    o_Z <= not (or_reduce(signalOutput));
+end;

@@ -1,0 +1,155 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 1991-2013 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+*/
+(header "symbol" (version "1.1"))
+(symbol
+	(rect 16 16 208 288)
+	(text "bit4controldiv" (rect 5 0 56 12)(font "Arial" ))
+	(text "inst" (rect 8 256 20 268)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "i_clk" (rect 0 0 17 12)(font "Arial" ))
+		(text "i_clk" (rect 21 27 38 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32)(line_width 1))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "i_reset" (rect 0 0 27 12)(font "Arial" ))
+		(text "i_reset" (rect 21 43 48 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48)(line_width 1))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "i_R" (rect 0 0 15 12)(font "Arial" ))
+		(text "i_R" (rect 21 59 36 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64)(line_width 1))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "i_counteq" (rect 0 0 37 12)(font "Arial" ))
+		(text "i_counteq" (rect 21 75 58 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80)(line_width 1))
+	)
+	(port
+		(pt 192 32)
+		(output)
+		(text "o_Rreset" (rect 0 0 38 12)(font "Arial" ))
+		(text "o_Rreset" (rect 133 27 171 39)(font "Arial" ))
+		(line (pt 192 32)(pt 176 32)(line_width 1))
+	)
+	(port
+		(pt 192 48)
+		(output)
+		(text "o_Rleftshift" (rect 0 0 47 12)(font "Arial" ))
+		(text "o_Rleftshift" (rect 124 43 171 55)(font "Arial" ))
+		(line (pt 192 48)(pt 176 48)(line_width 1))
+	)
+	(port
+		(pt 192 64)
+		(output)
+		(text "o_Rrightshift" (rect 0 0 51 12)(font "Arial" ))
+		(text "o_Rrightshift" (rect 120 59 171 71)(font "Arial" ))
+		(line (pt 192 64)(pt 176 64)(line_width 1))
+	)
+	(port
+		(pt 192 80)
+		(output)
+		(text "o_Rleftload" (rect 0 0 46 12)(font "Arial" ))
+		(text "o_Rleftload" (rect 125 75 171 87)(font "Arial" ))
+		(line (pt 192 80)(pt 176 80)(line_width 1))
+	)
+	(port
+		(pt 192 96)
+		(output)
+		(text "o_Rleftshr" (rect 0 0 43 12)(font "Arial" ))
+		(text "o_Rleftshr" (rect 128 91 171 103)(font "Arial" ))
+		(line (pt 192 96)(pt 176 96)(line_width 1))
+	)
+	(port
+		(pt 192 112)
+		(output)
+		(text "o_Rrightload" (rect 0 0 50 12)(font "Arial" ))
+		(text "o_Rrightload" (rect 121 107 171 119)(font "Arial" ))
+		(line (pt 192 112)(pt 176 112)(line_width 1))
+	)
+	(port
+		(pt 192 128)
+		(output)
+		(text "o_countclk" (rect 0 0 42 12)(font "Arial" ))
+		(text "o_countclk" (rect 129 123 171 135)(font "Arial" ))
+		(line (pt 192 128)(pt 176 128)(line_width 1))
+	)
+	(port
+		(pt 192 144)
+		(output)
+		(text "o_countreset" (rect 0 0 51 12)(font "Arial" ))
+		(text "o_countreset" (rect 120 139 171 151)(font "Arial" ))
+		(line (pt 192 144)(pt 176 144)(line_width 1))
+	)
+	(port
+		(pt 192 160)
+		(output)
+		(text "o_load" (rect 0 0 25 12)(font "Arial" ))
+		(text "o_load" (rect 146 155 171 167)(font "Arial" ))
+		(line (pt 192 160)(pt 176 160)(line_width 1))
+	)
+	(port
+		(pt 192 176)
+		(output)
+		(text "o_alusub" (rect 0 0 35 12)(font "Arial" ))
+		(text "o_alusub" (rect 136 171 171 183)(font "Arial" ))
+		(line (pt 192 176)(pt 176 176)(line_width 1))
+	)
+	(port
+		(pt 192 192)
+		(output)
+		(text "o_dandreset" (rect 0 0 49 12)(font "Arial" ))
+		(text "o_dandreset" (rect 122 187 171 199)(font "Arial" ))
+		(line (pt 192 192)(pt 176 192)(line_width 1))
+	)
+	(port
+		(pt 192 208)
+		(output)
+		(text "o_dandload" (rect 0 0 44 12)(font "Arial" ))
+		(text "o_dandload" (rect 127 203 171 215)(font "Arial" ))
+		(line (pt 192 208)(pt 176 208)(line_width 1))
+	)
+	(port
+		(pt 192 224)
+		(output)
+		(text "o_dorreset" (rect 0 0 43 12)(font "Arial" ))
+		(text "o_dorreset" (rect 128 219 171 231)(font "Arial" ))
+		(line (pt 192 224)(pt 176 224)(line_width 1))
+	)
+	(port
+		(pt 192 240)
+		(output)
+		(text "o_dorload" (rect 0 0 38 12)(font "Arial" ))
+		(text "o_dorload" (rect 133 235 171 247)(font "Arial" ))
+		(line (pt 192 240)(pt 176 240)(line_width 1))
+	)
+	(drawing
+		(rectangle (rect 16 16 176 256)(line_width 1))
+	)
+)
